@@ -74,7 +74,13 @@ public class Main {
                 git config --global user.email "sreeharshagummala@gmail.com"
                 cd GIT project (cd C:\Users\rpooj\IdeaProjects\GIT project)
                 git init (Initialize git repo)
-                Stashing - git add * (Will add everything. If not, give git add pathOfFile)
+                Stash/Stage - git add * (Will add everything. If not, give git add pathOfFile)
+                status - git status (Check what all files are stashed)
+                Commit - git commit -m "First Commit"(Commit will commit all files which are stashed or in staging)
+                Connect to github repo - git remote add origin https://github.com/sreeharshagummala-art/AutomationProject1.git
+                Push - git push - git push -u origin master
+                Pull - git pull origin master
+
 
          */
     }
