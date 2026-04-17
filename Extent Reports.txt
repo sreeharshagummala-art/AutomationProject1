@@ -1,0 +1,117 @@
+To generate extent reports, integarte extent reports library with TestNG framework
+
+Add depndency to Maven
+Create Utility Class
+Use Extent reports in TestNG
+Add Screenshot on failure
+Can use above step Globally using TestNG listener
+
+Add depndency to Maven
+<dependency>
+    <groupId>com.aventstack</groupId> <artifactId>extentreports</artifactId> <version>5.1.1</version> <!-- Check latest at mvnrepository.com -->
+</dependency>
+
+Create Utility Class
+
+public class ExtentManager {
+    private static ExtentReports extent;
+
+    public static ExtentReports getInstance() {
+        if (extent == null) {
+            String reportPath = System.getProperty("user.dir") + "/test-output/ExtentReport.html";
+            ExtentSparkReporter reporter = new ExtentSparkReporter(reportPath);
+            reporter.config().setReportName("Automation Test Report");
+            reporter.config().setDocumentTitle("Test Execution Report");
+
+            extent = new ExtentReports();
+            extent.attachReporter(reporter);
+            extent.setSystemInfo("Tester", "Your Name");
+            extent.setSystemInfo("Environment", "QA");
+        }
+        return extent;
+    }
+}
+
+Use Extent reports in TestNG
+
+public class SampleTest {
+    ExtentReports extent;
+    ExtentTest test;
+
+    @BeforeSuite
+    public void setupReport() {
+        extent = ExtentManager.getInstance();
+    }
+
+    @Test
+    public void testLogin() {
+        test = extent.createTest("Login Test");
+        test.info("Opening browser");
+
+        // Selenium actions (e.g., open browser, login, assert)
+        test.pass("Login successful");
+    }
+
+    @Test
+    public void testFailure() {
+        test = extent.createTest("Failure Test");
+        test.info("Starting failure test");
+        test.fail("This test failed intentionally");
+    }
+
+    @AfterSuite
+    public void tearDownReport() {
+        extent.flush();  // Writes everything to the report file
+    }
+}
+
+Add Screenshot on failure
+test.fail("Failed step", MediaEntityBuilder.createScreenCaptureFromPath("screenshot.png").build());
+
+or
+
+		File src = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
+        FileUtils.copyFile(src, new File("screenshots/" + result.getName() + ".png"));
+
+Can use above step Globally using TestNG listener:
+
+public class TestListener implements ITestListener {
+
+    ExtentReports extent = ExtentManager.getInstance();
+    ExtentTest test;
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        test = extent.createTest(result.getMethod().getMethodName());
+        result.setAttribute("extentTest", test);
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+        test = (ExtentTest) result.getAttribute("extentTest");
+        String screenshotPath = takeScreenshot(result.getMethod().getMethodName());
+        try {
+            test.fail("Test Failed: " + result.getThrowable(),
+                    MediaEntityBuilder.createScreenCaptureFromPath(screenshotPath).build());
+        } catch (IOException e) {
+            test.fail("Failed to attach screenshot.");
+        }
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+        extent.flush();
+    }
+
+    private String takeScreenshot(String methodName) {
+        // Example for Selenium
+        File src = ((TakesScreenshot) DriverManager.getDriver()).getScreenshotAs(OutputType.FILE);
+        String path = "screenshots/" + methodName + ".png";
+        try {
+            FileUtils.copyFile(src, new File(path));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return path;
+    }
+}

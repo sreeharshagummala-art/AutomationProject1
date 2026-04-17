@@ -1,0 +1,68 @@
+Reading from FTP file:
+Add Apached dependency in Maven file
+<dependency>
+    <groupId>commons-net</groupId>
+    <artifactId>commons-net</artifactId>
+    <version>3.8.0</version> <!-- or latest -->
+</dependency>
+
+public class FTPFileReader {
+
+    public static void main() {
+        FTPClient ftpClient = new FTPClient();
+        String server = "ftp.example.com";
+        String user = "ftpuser";
+        String pass = "ftppassword";
+        String remoteFilePath = "/folder/sample.txt";
+		int headerRow = 1;
+		map<String,String> fileData = new HashMap<>();
+		List<map<String,String>> wholeFileData = new ArrayList<>();
+
+        try {
+            ftpClient.connect(server);
+            boolean loggedIn = ftpClient.login(user, pass);
+
+            if (loggedIn) {
+                ftpClient.enterLocalPassiveMode(); // Important for firewalls/NAT
+
+                InputStream inputStream = ftpClient.retrieveFileStream(remoteFilePath);
+				
+                if (inputStream != null) {
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
+					String headers;
+					for(i=0; i<headerRow;i++){
+					headers = reader.readLine();
+					}
+					String[] headerColumns = headers.Split("|");
+                    String line;
+					String[] lineData;
+                    while ((line = reader.readLine()) != null) {
+                        lineData = line.Split("|");
+						for(i=0;i<headerColumns.size;i++){
+						fileData.put(headerColumns(i),lineData(i));
+						}
+						wholeFileData.add(fileData);
+                    }
+                    reader.close();
+                    ftpClient.completePendingCommand(); // Important to finalize the stream
+                } else {
+                    System.out.println("Could not open file: " + remoteFilePath);
+                }
+
+                ftpClient.logout();
+            } else {
+                System.out.println("Login failed.");
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        } finally {
+            try {
+                if (ftpClient.isConnected()) {
+                    ftpClient.disconnect();
+                }
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }
+}

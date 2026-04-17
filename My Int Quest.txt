@@ -1,0 +1,120 @@
+1. How to Assert a given array is or forms inverted V
+	find highest number - until highest number, int values should increase. After, decrease
+	
+	Strict V:
+	 public static boolean isInvertedV(int[] arr) {
+        if (arr == null || arr.length < 3) return false;
+
+        int i = 0;
+
+        // Strictly increasing part
+        while (i + 1 < arr.length && arr[i] < arr[i + 1]) {
+            i++;
+        }
+
+        // Peak can't be at start or end
+        if (i == 0 || i == arr.length - 1) return false;
+
+        // Strictly decreasing part
+        while (i + 1 < arr.length && arr[i] > arr[i + 1]) {
+            i++;
+        }
+
+        // If we reached the end, it's a valid inverted V
+        return i == arr.length - 1;
+    }
+
+    public static void main(String[] args) {
+        int[] valid = {1, 3, 7, 5, 2};
+        int[] invalid = {1, 2, 3, 2, 3};
+
+        assert isInvertedV(valid) : "Array should be an inverted V";
+        assert !isInvertedV(invalid) : "Array should NOT be an inverted V";
+
+        System.out.println("All assertions passed.");
+		}
+	}
+	
+	Not Strict V: (Can have duplicates)
+	public static boolean isApproxInvertedV(int[] arr) {
+        if (arr == null || arr.length < 3) return false;
+
+        int peakIndex = 0;
+        int max = arr[0];
+
+        // Find the first occurrence of the max (peak)
+        for (int i = 1; i < arr.length; i++) {
+            if (arr[i] > max) {
+                max = arr[i];
+                peakIndex = i;
+            }
+        }
+
+        // Increasing (non-decreasing) before peak
+        for (int i = 0; i < peakIndex; i++) {
+            if (arr[i] > arr[i + 1]) {
+                return false; // Should not decrease before peak
+            }
+        }
+
+        // Decreasing (non-increasing) after peak
+        for (int i = peakIndex; i < arr.length - 1; i++) {
+            if (arr[i] < arr[i + 1]) {
+                return false; // Should not increase after peak
+            }
+        }
+
+        return true;
+    }
+
+    public static void main(String[] args) {
+        int[] Valid = {1, 2, 4, 5, 7, 7, 9, 6, 6, 3, 2, 1}; 
+        int[] Invalid = {1, 2, 4, 3, 5, 7, 7, 9, 6, 6, 3, 4, 2, 1}; // not strictly increasing/decreasing
+
+        if (isApproxInvertedV(messyV)) {
+            System.out.println("✅ Approximate inverted V");
+        } else {
+            System.out.println("❌ Not an inverted V");
+        }
+		}
+	}
+	
+2. How to identify elements under Shadow root
+	- In Devtools, you can use $0.shadowRoot - See examples online
+	- identify the shadow root first - identify it with javaScriptExecutor - then, instead of driver.findElement, we can use shadowRoot.findElement
+	
+	 public static void main(String[] args) {
+        WebDriver driver = new ChromeDriver();
+        driver.get("https://example-shadow-dom.com");
+
+        // JavaScriptExecutor to access shadow DOM
+        JavascriptExecutor js = (JavascriptExecutor) driver;
+
+        // Step 1: Get the shadow host
+        WebElement shadowHost = driver.findElement(By.cssSelector("custom-element"));
+
+        // Step 2: Get shadow root
+        WebElement shadowRoot = (WebElement) js.executeScript("return arguments[0].shadowRoot", shadowHost);
+
+        // Step 3: Find element inside shadow root
+        WebElement innerElement = shadowRoot.findElement(By.cssSelector("input#username"));
+
+        // Step 4: Interact with it
+        innerElement.sendKeys("test user");
+
+        driver.quit();
+    }
+	
+3. Identify a list of columns in a table
+	driver.findElements(By.xPath(""));
+	
+4. What if the class, id or any other attributes you use in your xPath contain spaces in them.
+	Q: <div class="     test-ng    ">
+	//div[normalize-space(@class)='test-ng']  -- best
+	driver.findElement(By.cssSelector(".test-ng")); -- CSS selector, easier
+	//div[contains(@class, 'test-ng')]   -- This may match unwanted elements if some other class contains test-ng as substring.
+	
+	Q: <div class="   btn   test-ng  active  ">
+	//div[contains(concat(' ', normalize-space(@class), ' '), ' test-ng ')]
+	
+	

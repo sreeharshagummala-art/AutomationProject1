@@ -1,0 +1,54 @@
+Add dependency in Maven or directly download JAR
+<dependency>
+    <groupId>org.apache.poi</groupId>
+    <artifactId>poi-ooxml</artifactId>
+    <version>5.2.3</version> <!-- or latest -->
+</dependency>
+
+public class ExcelReader {
+
+    public static void main(String[] args) {
+        String excelPath = "C:/TestData/testdata.xlsx";
+		List<Map<String, String>> dataList = new ArrayList<>();
+		 Map<String, String> rowMap = new LinkedHashMap<>();
+
+        try (FileInputStream fis = new FileInputStream(new File(excelPath));
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0); // First sheet
+            int rowCount = sheet.getPhysicalNumberOfRows();
+			
+			Row headerRow = sheet.getRow(0);
+            for (int i = 1; i < rowCount; i++) {
+                Row row = sheet.getRow(i);
+                if (row != null) {
+                    int cellCount = row.getPhysicalNumberOfCells();
+                    for (int j = 0; j < cellCount; j++) {
+                        Cell cell = row.getCell(j);
+                        String cellValue = getCellValueAsString(cell);
+						String header = getCellValueAsString(headerRow.getCell(j));
+                        rowMap.put(header, cellValue);
+                    }
+                     dataList.add(rowMap);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    // Helper to convert cell values to String
+    private static String getCellValueAsString(Cell cell) {
+        if (cell == null) return "";
+
+        return switch (cell.getCellType()) {
+            case STRING -> cell.getStringCellValue();
+            case NUMERIC -> String.valueOf(cell.getNumericCellValue());
+            case BOOLEAN -> String.valueOf(cell.getBooleanCellValue());
+            case FORMULA -> cell.getCellFormula();
+            case BLANK -> "";
+            default -> "Unsupported";
+        };
+    }
+}

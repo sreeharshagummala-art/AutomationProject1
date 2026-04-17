@@ -1,0 +1,115 @@
+1. Java Programming (Core Java)
+
+OOP concepts: inheritance, polymorphism, abstraction, encapsulation
+
+OOP Concept	In QA/Selenium Example
+Encapsulation	Page Object Model hides locators inside methods
+Inheritance		BaseTest with common code, extended by tests
+Polymorphism	WebDriver driver = new ChromeDriver();
+Abstraction	Use interfaces to switch between browsers or tools easily
+
+Encapsulation = Hide data, expose actions
+🛡️ Protect internal data by using private variables and public methods.
+
+💬 Simple Example:
+You don’t directly click a button using a locator from the test class. Instead, you create a method like clickLoginButton() in a Page Object.
+
+public class LoginPage {
+    private WebElement loginButton = driver.findElement(By.id("login"));
+
+    public void clickLoginButton() {
+        loginButton.click();  // Internal detail hidden
+    }
+}
+✅ Why it matters:
+
+Reduces duplicate code. Test code is cleaner. If the locator changes, update only in one place
+
+🧬 2. Inheritance = "is-a" relationship / reuse base test code
+🧱 Share common code across test classes by extending a base class.
+
+💬 Simple Example:
+
+public class BaseTest {
+    WebDriver driver;
+
+    public void launchBrowser() {
+        driver = new ChromeDriver();
+        driver.get("https://example.com");
+    }
+
+    public void quitBrowser() {
+        driver.quit();
+    }
+}
+Now reuse it in tests:
+
+public class LoginTest extends BaseTest {
+
+    @Test
+    public void verifyLogin() {
+        launchBrowser();  // Reused from BaseTest
+        // test steps...
+        quitBrowser();
+    }
+}
+✅ Why it matters:
+
+Reduces code duplication. Easy to maintain test setup/teardown logic
+
+🧩 3. Polymorphism = Same method, different behavior
+🧠 One method works differently depending on the object type.
+
+💬 Simple Example in Selenium:
+Method overloading:
+public class WaitUtils {
+
+    public void waitForElement(WebElement element) {
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOf(element));
+    }
+
+    public void waitForElement(By locator) {
+        new WebDriverWait(driver, Duration.ofSeconds(10)).until(ExpectedConditions.visibilityOfElementLocated(locator));
+    }
+}
+✅ You can call the same waitForElement() method with either a WebElement or a By locator.
+
+Method Overriding:
+WebDriver driver;
+
+driver = new ChromeDriver();   // or FirefoxDriver, EdgeDriver
+driver.get("https://google.com");
+Even though the variable is of type WebDriver, it can refer to any browser driver.
+
+✅ Why it matters:
+
+Your test framework can switch browsers easily. Promotes flexibility and cross-browser testing
+
+🧼 4. Abstraction = Hide complexity, show only essentials
+🎭 Use interfaces or abstract classes to define what needs to be done, not how.
+
+💬 Simple Example using interface:
+
+public interface DriverManager {
+    WebDriver getDriver();
+}
+
+public class ChromeManager implements DriverManager {
+    public WebDriver getDriver() {
+        return new ChromeDriver();
+    }
+}
+
+public class FirefoxManager implements DriverManager {
+    public WebDriver getDriver() {
+        return new FirefoxDriver();
+    }
+}
+You can now write:
+
+DriverManager manager = new ChromeManager();
+WebDriver driver = manager.getDriver();
+
+✅ Why it matters:
+
+Easily switch between browser drivers. Hides setup complexity from test cases

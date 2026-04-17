@@ -1,0 +1,84 @@
+API Testing: Every url will be in below format
+BaseURL/Resource/(Query/Path)Parameters
+Ex: https://apexon.freshservice.com/support/catalog/items?popular=true
+Base URL - https://apexon.freshservice.com
+Path Param - support
+Path Param - catalog
+Query Param - items?popular=true  (Will have ? in it)
+
+REST Assured:
+syntax:
+	given()
+	.when()
+	.then()
+
+List<String> emails = response.jsonPath().getList("data.email");
+
+Basic Auth	.auth().preemptive().basic("user", "pass")
+Bearer Token	.header("Authorization", "Bearer " + token)
+OAuth 2.0	.auth().oauth2("access_token")	
+	
+JSON Schema Validator:
+@Test
+public void validateJsonSchema() {
+    given()
+    .when()
+        .get("https://reqres.in/api/users/2")
+    .then()
+        .assertThat()
+        .body(matchesJsonSchemaInClasspath("schemas/user-schema.json"));
+}
+
+POST:
+@Test
+public void createUser() {
+    given()
+        .header("Content-Type", "application/json")
+        .body("{ \"name\": \"Alice\", \"job\": \"QA\" }")
+    .when()
+        .post("https://reqres.in/api/users")
+    .then()
+        .statusCode(201)
+        .body("name", equalTo("Alice"))
+        .body("job", equalTo("QA"));
+}
+
+Negative Test: Validate response is null and status is 400
+@Test
+public void userNotFound() {
+    Response response = 
+        given()
+        .when()
+            .get("https://reqres.in/api/users/9999")
+        .then()
+            .statusCode(404)
+            .extract().response();
+
+    System.out.println("Response Body: " + response.getBody().asString()); // output: Response Body: {}
+}
+
+Parameterized Test Using DataProvider (TestNG)
+Test user creation with multiple names using @DataProvider
+@DataProvider(name = "userData")
+public Object[][] getUsers() {
+    return new Object[][] {
+        {"Alice", "QA"},
+        {"Bob", "Dev"},
+        {"Charlie", "Manager"}
+    };
+}
+
+@Test(dataProvider = "userData")
+public void createUserParameterized(String name, String job) {
+    given()
+        .header("Content-Type", "application/json")
+        .body("{ \"name\": \"" + name + "\", \"job\": \"" + job + "\" }")
+    .when()
+        .post("https://reqres.in/api/users")
+    .then()
+        .statusCode(201)
+        .body("name", equalTo(name))
+        .body("job", equalTo(job));
+}
+🧾 Output:
+Created users: Alice, Bob, Charlie 

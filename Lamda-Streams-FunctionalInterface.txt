@@ -1,0 +1,43 @@
+✅ 1. Lambda Expressions (🔻Anonymous Functions)
+
+A lambda is a concise way to represent an anonymous method (function). It's mainly used with functional interfaces (interfaces with one abstract method).
+
+List<WebElement> buttons = driver.findElements(By.cssSelector(".btn"));
+buttons.forEach(button -> button.click());  // Lambda
+
+List<String> tools = List.of("Java", "Selenium", "Jenkins", "Python");
+tools.stream()
+     .filter(t -> t.startsWith("J"))
+     .forEach(System.out::println);
+
+✅ 2. Streams (🔁 Functional operations on collections)
+
+Java Streams API lets you process collections in a declarative, pipeline-style way using map, filter, collect, etc.
+
+List<String> data = List.of("QA", "Dev", "DevOps", "QA");
+
+List<String> uniqueQA = data.stream()
+    .filter(role -> role.equals("QA"))
+    .distinct()
+    .collect(Collectors.toList());
+
+System.out.println(uniqueQA); //[QA]
+
+List<String> tools = List.of("testng", "cucumber", "rest-assured");
+
+tools.stream()
+     .map(String::toUpperCase)
+     .forEach(System.out::println);
+	 
+✅ 3. Functional Interface (🔧 Interface with one method)
+
+An interface with only one abstract method — perfect for use with lambdas.
+
+@FunctionalInterface
+interface Calculator {
+    int operation(int a, int b);
+}
+You can now use a lambda expression:
+
+Calculator add = (a, b) -> a + b;
+System.out.println(add.operation(5, 3));

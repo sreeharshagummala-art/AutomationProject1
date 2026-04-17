@@ -1,0 +1,94 @@
+TestNG:
+Annotations: 
+@BeforeSuite and @AfterSuite run once at very start and very end of the entire test run.
+
+@BeforeClass and @AfterClass run once before and after all tests in the class.
+
+@BeforeMethod and @AfterMethod run before and after each test method (@Test).
+
+The @Test methods test() run independently.
+
+@BeforeTest / @AfterTest: Run before/after tests in <test> tag in XML file.
+
+@DataProvider: Supplies data for data-driven tests.
+
+@Parameters: Inject parameters from testng.xml or code.
+
+@Ignore: Skip a test.
+
+Example:
+public class SampleTest {
+
+    @BeforeSuite
+    public void beforeSuite() {
+        System.out.println("Before entire suite");
+    }
+
+    @BeforeClass
+    public void beforeClass() {
+        System.out.println("Before all tests in this class");
+    }
+
+    @BeforeMethod
+    public void beforeMethod() {
+        System.out.println("Before each test method");
+    }
+
+    @Test
+    public void test1() {
+        System.out.println("Executing Test 1");
+    }
+
+    @Test
+    public void test2() {
+        System.out.println("Executing Test 2");
+    }
+
+    @AfterMethod
+    public void afterMethod() {
+        System.out.println("After each test method");
+    }
+
+    @AfterClass
+    public void afterClass() {
+        System.out.println("After all tests in this class");
+    }
+
+    @AfterSuite
+    public void afterSuite() {
+        System.out.println("After entire suite");
+    }
+}
+
+Output:
+Before entire suite
+Before all tests in this class
+Before each test method
+Executing Test 1
+After each test method
+Before each test method
+Executing Test 2
+After each test method
+After all tests in this class
+After entire suite
+
+How to execute a test:
+
+update testNG xml file with test details > right click on the file and run
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
+<suite name="MyTestSuite">
+
+  <test name="RegressionTests">
+    <classes>
+      <class name="tests.LoginTest"/>
+      <class name="tests.HomePageTest"/>
+    </classes>
+  </test>
+
+  <test name="SmokeTests">
+    <classes>
+      <class name="tests.SearchTest"/>
+    </classes>
+  </test>
+
+</suite>

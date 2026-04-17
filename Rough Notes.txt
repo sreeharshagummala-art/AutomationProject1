@@ -1,0 +1,91 @@
+public class findNonRepeat(String testttt){
+	character[] char = testttt.toCharArray();
+	Map<Character,int> map1 = new HashMap<>();
+	for(int i=0; i<char.length(); i++){
+		map1.put(char[i],map1.getOrDefault(i,0)+1);
+	}
+	for(Map.Entry<Character,Int>exmap : map1.entrySet()){
+	if(exmap.getValue()==1) Sys.p.o(""+exmap.getKey());
+	}
+}
+
+Character[] char = testttt.toCharArray();
+Set<Character> nonDupSet = new HashSet<>();
+Set<> dupSet = new HashSet<>();
+for(char test : char){
+	nonDupSet.add(test);
+}
+StringBuilder str = new StringBuilder();
+for(char ch: nonDupSet){
+	str.append(ch);
+}
+return str.toString();
+
+while(!nonDupSet.add(char)){
+nonDupSet.add(char);
+}
+
+
+String test = "abcdefgh";
+char[] ch = test.toCharArray();
+List<Character> vow = new ArrayList<>();
+List<Character> nonvow = new ArrayList<>();
+for(int i=0; i<ch.length; i++){
+if(ch[i]=='a' || ch[i]=='e' || ch[i]=='i' || ch[i]=='o' || ch[i]=='u'){
+	vow.add(ch[i]);
+} else{
+	nonvow.add(ch[i]);
+}
+	
+}
+System.Out.Println("Vowels: "+ vow + "\nNon Vow: "+ nonvow);
+
+int[] intArray = nums;
+reversing array..
+for (int i=0; i<nums.length/2 ; i++){
+	int temp = num[i];
+	num[i]=num[nums.length-1-i];
+	num[nums.length-1-i]=temp;
+}
+
+Find all pairs with given sum
+Map<int,Map<int,int>> map1 = new HashMap<>();
+Map<int,int> map2 = new HashMap<>():
+int[] num = {2,4,3,5,7,8,9}
+int target = 10;
+for(int i=0; i<num.length ; i++){
+ if(num.contains(10-num[i])){
+	map2.put(num[i],10-num[i]);
+	map1.put(i,map2);
+ }
+}
+System.out.println(map1);
+
+public static List<List<String>> groupAnagrams(String[] strs) {
+    Map<String, List<String>> map = new HashMap<>();
+    for (String s : strs) {
+        char[] arr = s.toCharArray();
+        Arrays.sort(arr);
+        String key = new String(arr);
+        if(!map.containsKey(key)){
+			map.put(key,new ArrayList<>());
+		}
+		map.get(key).add(s);
+    }
+    return new ArrayList<>(map.values());
+}
+
+for(int i=0; i<num.length; i++){
+	map.put(num[i],map.getOrDefault(num[i],0)+1)
+}
+int max = 0;
+int maxIntFre = 0;
+for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+    int temp = entry.getValue();
+	if(temp>max){ 
+		max = temp;
+		maxIntFre = entry.getKey();
+	}
+}
+return maxIntFre;
+
